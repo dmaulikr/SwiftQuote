@@ -28,10 +28,13 @@ class QuoteViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Make status bar contrast with our dark background.
+        UIApplication.sharedApplication().statusBarStyle = .LightContent
+        
         // Make the getQuoteButton pretty.
         getQuoteButton.layer.cornerRadius = 5
-        getQuoteButton.layer.borderColor = UIColor.blueColor().CGColor
-        getQuoteButton.layer.borderWidth = 1
+        getQuoteButton.layer.borderColor = getQuoteButton.currentTitleColor.CGColor
+        getQuoteButton.layer.borderWidth = 2
         
         // Gesture recognizer to close keyboard on tap-outside.
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(QuoteViewController.tap(_:)))
