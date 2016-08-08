@@ -14,7 +14,6 @@
 		043E794A1D57FC3300B70FEA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 043E79481D57FC3300B70FEA /* LaunchScreen.storyboard */; };
 		043E79551D57FC3300B70FEA /* SwiftQuoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043E79541D57FC3300B70FEA /* SwiftQuoteTests.swift */; };
 		043E79601D57FC3300B70FEA /* SwiftQuoteUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043E795F1D57FC3300B70FEA /* SwiftQuoteUITests.swift */; };
-		043E796F1D57FDC600B70FEA /* tsv_to_json.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043E796E1D57FDC600B70FEA /* tsv_to_json.swift */; };
 		043E79721D57FE3300B70FEA /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043E79711D57FE3300B70FEA /* DataManager.swift */; };
 		043E79761D58073300B70FEA /* Quote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 043E79751D58073300B70FEA /* Quote.swift */; };
 		82832DA846516CB4384FC56C /* Pods_SwiftQuote.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 34D96FE4CCE226C746823D77 /* Pods_SwiftQuote.framework */; };
@@ -51,7 +50,6 @@
 		043E795B1D57FC3300B70FEA /* SwiftQuoteUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SwiftQuoteUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		043E795F1D57FC3300B70FEA /* SwiftQuoteUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftQuoteUITests.swift; sourceTree = "<group>"; };
 		043E79611D57FC3300B70FEA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		043E796E1D57FDC600B70FEA /* tsv_to_json.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = tsv_to_json.swift; sourceTree = "<group>"; };
 		043E79711D57FE3300B70FEA /* DataManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		043E79751D58073300B70FEA /* Quote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Quote.swift; sourceTree = "<group>"; };
 		34D96FE4CCE226C746823D77 /* Pods_SwiftQuote.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SwiftQuote.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -111,8 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				043E79741D5806EF00B70FEA /* Model */,
-				043E79701D57FE0600B70FEA /* Singleton */,
-				043E796D1D57FD7F00B70FEA /* Helper */,
+				043E79701D57FE0600B70FEA /* Service */,
 				043E793F1D57FC3300B70FEA /* AppDelegate.swift */,
 				043E79411D57FC3300B70FEA /* QuoteViewController.swift */,
 				043E79431D57FC3300B70FEA /* Main.storyboard */,
@@ -141,20 +138,12 @@
 			path = SwiftQuoteUITests;
 			sourceTree = "<group>";
 		};
-		043E796D1D57FD7F00B70FEA /* Helper */ = {
-			isa = PBXGroup;
-			children = (
-				043E796E1D57FDC600B70FEA /* tsv_to_json.swift */,
-			);
-			name = Helper;
-			sourceTree = "<group>";
-		};
-		043E79701D57FE0600B70FEA /* Singleton */ = {
+		043E79701D57FE0600B70FEA /* Service */ = {
 			isa = PBXGroup;
 			children = (
 				043E79711D57FE3300B70FEA /* DataManager.swift */,
 			);
-			name = Singleton;
+			name = Service;
 			sourceTree = "<group>";
 		};
 		043E79741D5806EF00B70FEA /* Model */ = {
@@ -365,7 +354,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				043E796F1D57FDC600B70FEA /* tsv_to_json.swift in Sources */,
 				043E79721D57FE3300B70FEA /* DataManager.swift in Sources */,
 				043E79421D57FC3300B70FEA /* QuoteViewController.swift in Sources */,
 				043E79761D58073300B70FEA /* Quote.swift in Sources */,

@@ -14,9 +14,14 @@ class QuoteViewController: UIViewController {
     private final let DATA_GATHERING_ERROR:String = "Error getting quote! Please make sure your exchange and ticker are valid. If they are, please try again later."
     private final let TEXT_FORMAT_ERROR:String = "Please enter a valid ticker/exchange."
     
+    private final let DEFAULT_EXCHANGE:String = "NASDAQ"
+    private final let DEFAULT_TICKER:String = "AAPL"
+    
+    @IBOutlet weak var entryView: UIView!
+    
+    @IBOutlet weak var getQuoteButton: UIButton!
     @IBOutlet weak var tickerTextField: UITextField!
     @IBOutlet weak var exchangeTextField: UITextField!
-    @IBOutlet weak var getQuoteButton: UIButton!
     
     @IBOutlet weak var quoteView: UIView!
     @IBOutlet weak var tickerExchangeLabel: UILabel!
@@ -24,6 +29,48 @@ class QuoteViewController: UIViewController {
     @IBOutlet weak var bidLabel: UILabel!
     
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    // CONSTRAINTS
+    @IBOutlet weak var entryViewLeadingContstraint: NSLayoutConstraint!
+    @IBOutlet weak var entryViewVerticalContraint: NSLayoutConstraint!
+    @IBOutlet weak var quoteViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var quoteViewVerticalConstraint: NSLayoutConstraint!
+    
+    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
+        updateConstraints()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        updateConstraints()
+    }
+    
+    private func updateConstraints() {
+        let padding:CGFloat = 16.0
+        let viewWidth = self.view.frame.size.width
+        let viewHeight = self.view.frame.size.height
+        
+        let entryViewWidth = entryView.frame.width
+        let entryViewHeight = entryView.frame.height
+        let quoteViewWidth = quoteView.frame.width
+        let quoteViewHeight = quoteView.frame.height
+        
+        switch UIApplication.sharedApplication().statusBarOrientation {
+        case .Portrait, .PortraitUpsideDown, .Unknown:
+            entryViewLeadingContstraint.constant = ((viewWidth - entryViewWidth) / 2) - padding
+            entryViewVerticalContraint.constant = (((viewHeight / 2) - entryViewHeight) / 2) - padding
+            
+            quoteViewLeadingConstraint.constant = ((viewWidth - quoteViewWidth) / 2) - padding
+            quoteViewVerticalConstraint.constant = ((((viewHeight / 2) - quoteViewHeight) / 2) + (viewHeight / 2)) - padding
+            break
+        case .LandscapeLeft, .LandscapeRight:
+            entryViewVerticalContraint.constant = ((viewHeight - entryViewHeight) / 2) - padding
+            entryViewLeadingContstraint.constant = (((viewWidth / 2) - entryViewWidth) / 2) - padding
+            
+            quoteViewVerticalConstraint.constant = ((viewHeight - quoteViewHeight) / 2) - padding
+            quoteViewLeadingConstraint.constant = ((((viewWidth / 2) - quoteViewWidth) / 2) + (viewWidth / 2)) - padding
+            break
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,6 +92,11 @@ class QuoteViewController: UIViewController {
         // Hide the quote upon initial load
         toggleQuoteViewVisibility(true)
         toggleLoadingAnimation(false)
+        
+        // Load in default data and set correpsonding placeholder text.
+        exchangeTextField.placeholder = DEFAULT_EXCHANGE
+        tickerTextField.placeholder = DEFAULT_TICKER
+        fetchQuoteData(DEFAULT_TICKER, _exchange: DEFAULT_EXCHANGE)
     }
 
     @IBAction func getQuoteAction(sender: AnyObject) {
@@ -53,27 +105,30 @@ class QuoteViewController: UIViewController {
             self.toggleLoadingAnimation(true)
             self.toggleQuoteViewVisibility(true)
             
-            DataManager.getQuote(_ticker, exchange: _exchange, onCompletion: { (quote, error) in
-                if error == nil && quote != nil {
-                    self.displayQuote(quote!)
-                    self.toggleQuoteViewVisibility(false)
-                } else {
-                    print(error)
-                    self.displayErrorMessage(self.DATA_GATHERING_ERROR)
-                }
-                
-                self.clearTextFieldText()
-                self.toggleLoadingAnimation(false)
-            })
+            fetchQuoteData(_ticker, _exchange: _exchange)
         } else {
             self.displayErrorMessage(TEXT_FORMAT_ERROR)
         }
     }
     
+    private func fetchQuoteData(_ticker:String, _exchange:String) {
+        DataManager.getQuote(_ticker, exchange: _exchange, onCompletion: { (quote, error) in
+            if error == nil && quote != nil {
+                self.displayQuote(quote!)
+                self.toggleQuoteViewVisibility(false)
+            } else {
+                self.displayErrorMessage(self.DATA_GATHERING_ERROR)
+            }
+            
+            self.clearTextFieldText()
+            self.toggleLoadingAnimation(false)
+        })
+    }
+    
     private func displayQuote(quote: Quote) {
         askLabel.text = quote.ask
         bidLabel.text = quote.bid
-        tickerExchangeLabel.text = String(format: "%@:%@", quote.exchange, quote.ticker)
+        tickerExchangeLabel.text = String(format: "%@ (%@)", quote.ticker, quote.exchange)
     }
     
     private func displayErrorMessage(error:String) {
