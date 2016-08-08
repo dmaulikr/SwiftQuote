@@ -11,39 +11,41 @@ import SwiftyJSON
 
 class QuoteViewController: UIViewController {
     
+    // Static strings.
     private final let DATA_GATHERING_ERROR:String = "Error getting quote! Please make sure your exchange and ticker are valid. If they are, please try again later."
     private final let TEXT_FORMAT_ERROR:String = "Please enter a valid ticker/exchange."
-    
     private final let DEFAULT_EXCHANGE:String = "NASDAQ"
     private final let DEFAULT_TICKER:String = "AAPL"
     
+    // View elements.
     @IBOutlet weak var entryView: UIView!
-    
     @IBOutlet weak var getQuoteButton: UIButton!
     @IBOutlet weak var tickerTextField: UITextField!
     @IBOutlet weak var exchangeTextField: UITextField!
-    
     @IBOutlet weak var quoteView: UIView!
     @IBOutlet weak var tickerExchangeLabel: UILabel!
     @IBOutlet weak var askLabel: UILabel!
     @IBOutlet weak var bidLabel: UILabel!
-    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
-    // CONSTRAINTS
+    // View constraints.
     @IBOutlet weak var entryViewLeadingContstraint: NSLayoutConstraint!
     @IBOutlet weak var entryViewVerticalContraint: NSLayoutConstraint!
     @IBOutlet weak var quoteViewLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var quoteViewVerticalConstraint: NSLayoutConstraint!
     
+    // Update constraints on rotation.
     override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
         updateConstraints()
     }
     
+    // Update constraints on initial subview layout.
     override func viewDidLayoutSubviews() {
         updateConstraints()
     }
     
+    // Update the constraints of the main two subviews based on
+    // the current device orientation.
     private func updateConstraints() {
         let padding:CGFloat = 16.0
         let viewWidth = self.view.frame.size.width
@@ -99,6 +101,7 @@ class QuoteViewController: UIViewController {
         fetchQuoteData(DEFAULT_TICKER, _exchange: DEFAULT_EXCHANGE)
     }
 
+    // Called from UI. Initializes quote data fetching task.
     @IBAction func getQuoteAction(sender: AnyObject) {
         if let _exchange = exchangeTextField.text,
             let _ticker = tickerTextField.text {
@@ -111,6 +114,7 @@ class QuoteViewController: UIViewController {
         }
     }
     
+    // Calls the DataManager to gather quote data for display.
     private func fetchQuoteData(_ticker:String, _exchange:String) {
         DataManager.getQuote(_ticker, exchange: _exchange, onCompletion: { (quote, error) in
             if error == nil && quote != nil {
@@ -125,12 +129,14 @@ class QuoteViewController: UIViewController {
         })
     }
     
+    // Displays a quote in the UI.
     private func displayQuote(quote: Quote) {
         askLabel.text = quote.ask
         bidLabel.text = quote.bid
         tickerExchangeLabel.text = String(format: "%@ (%@)", quote.ticker, quote.exchange)
     }
     
+    // Displays an dismissable error message.
     private func displayErrorMessage(error:String) {
         let alertController = UIAlertController(title: "Error!", message:
             error, preferredStyle: UIAlertControllerStyle.Alert)
@@ -139,11 +145,13 @@ class QuoteViewController: UIViewController {
         self.presentViewController(alertController, animated: true, completion: nil)
     }
     
+    // Clears the textfields for more input.
     private func clearTextFieldText() {
         tickerTextField.text = ""
         exchangeTextField.text = ""
     }
     
+    // Shows/Hides loading animation during/after data fetching tasks.
     private func toggleLoadingAnimation(showAnimation:Bool) {
         if showAnimation {
             activityIndicator.hidden = false
@@ -154,12 +162,14 @@ class QuoteViewController: UIViewController {
         }
     }
     
+    // Shows/Hides quoteView during/after data fetching tasks.
     private func toggleQuoteViewVisibility(hidden:Bool) {
         quoteView.hidden = hidden
     }
     
-    
+    // Dimisses keyboard upon tapping the UI outside of the keyboard itself.
     @objc private func tap(gesture: UITapGestureRecognizer) {
         view.endEditing(true)
     }
+    
 }

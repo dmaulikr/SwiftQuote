@@ -20,7 +20,7 @@ class DataManager: NSObject {
     internal static func getQuote(ticker: String, exchange: String, onCompletion: (Quote?, NSError?) -> Void) {
         // Google finance will return an array of JSON based on the ticker that was presented.
         // Throw the correct error in the event that the exchange or ticker is invalid or if the 
-        // request fails.s
+        // request fails.
         let quoteUrl = String(format: GOOGLE_FINANCE_URL, exchange, ticker)
         Alamofire.request(.GET, quoteUrl)
             .validate()
@@ -52,6 +52,7 @@ class DataManager: NSObject {
         }
     }
     
+    // Accepts a JSON input and returns an optional Quote.
     private static func jsonToQuote(json: JSON) -> Quote? {
         guard let _e = json["e"].string,
             let _t = json["t"].string,
