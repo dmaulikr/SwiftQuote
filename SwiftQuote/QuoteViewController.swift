@@ -112,6 +112,8 @@ class QuoteViewController: UIViewController {
         } else {
             self.displayErrorMessage(TEXT_FORMAT_ERROR)
         }
+        
+        closeKeyboard()
     }
     
     // Calls the DataManager to gather quote data for display.
@@ -169,6 +171,11 @@ class QuoteViewController: UIViewController {
     
     // Dimisses keyboard upon tapping the UI outside of the keyboard itself.
     @objc private func tap(gesture: UITapGestureRecognizer) {
+        closeKeyboard()
+    }
+    
+    // Dimisses the keyboard.
+    private func closeKeyboard() {
         view.endEditing(true)
     }
     
