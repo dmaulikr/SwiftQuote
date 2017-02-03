@@ -17,22 +17,22 @@ class DataManager: NSObject {
     
     // Used By:
     // QuoteViewController
-    internal static func getQuote(ticker: String, exchange: String, onCompletion: (Quote?, NSError?) -> Void) {
+    internal static func getQuote(_ ticker: String, exchange: String, onCompletion: @escaping (Quote?, NSError?) -> Void) {
         // Google finance will return an array of JSON based on the ticker that was presented.
         // Throw the correct error in the event that the exchange or ticker is invalid or if the 
         // request fails.
         let quoteUrl = String(format: GOOGLE_FINANCE_URL, exchange, ticker)
-        Alamofire.request(.GET, quoteUrl)
+        Alamofire.request(quoteUrl)
             .validate()
-            .responseString { response in
+            .responseString(completionHandler: { (response) in
                 switch response.result {
-                case .Success(let data):
-                    let dataJsonString = data.stringByReplacingOccurrencesOfString("// ", withString: "")
-                        .stringByReplacingOccurrencesOfString("[", withString: "")
-                        .stringByReplacingOccurrencesOfString("]", withString: "")
-                        .stringByReplacingOccurrencesOfString("\n", withString: "")
+                case .success(let data):
+                    let dataJsonString = data.replacingOccurrences(of: "// ", with: "")
+                        .replacingOccurrences(of: "[", with: "")
+                        .replacingOccurrences(of: "]", with: "")
+                        .replacingOccurrences(of: "\n", with: "")
                     
-                    guard let dataJsonEncoded = dataJsonString.dataUsingEncoding(NSUTF8StringEncoding) else {
+                    guard let dataJsonEncoded = dataJsonString.data(using: String.Encoding.utf8) else {
                         onCompletion(nil,NSError(domain: "error", code: 1, userInfo: nil))
                         break
                     }
@@ -45,15 +45,15 @@ class DataManager: NSObject {
                     }
                     
                     onCompletion(quote, nil)
-                case .Failure(let error):
+                case .failure(let error):
                     let err = error as NSError
                     onCompletion(nil, err)
                 }
-        }
+            })
     }
     
     // Accepts a JSON input and returns an optional Quote.
-    private static func jsonToQuote(json: JSON) -> Quote? {
+    fileprivate static func jsonToQuote(_ json: JSON) -> Quote? {
         guard let _e = json["e"].string,
             let _t = json["t"].string,
             let _l = json["l"].string else {

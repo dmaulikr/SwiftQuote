@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Quote {
+open class Quote {
     
     var exchange: String
     var ask: String

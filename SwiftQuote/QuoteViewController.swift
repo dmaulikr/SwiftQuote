@@ -12,10 +12,10 @@ import SwiftyJSON
 class QuoteViewController: UIViewController {
     
     // Static strings.
-    private final let DATA_GATHERING_ERROR:String = "Error getting quote! Please make sure your exchange and ticker are valid. If they are, please try again later."
-    private final let TEXT_FORMAT_ERROR:String = "Please enter a valid ticker/exchange."
-    private final let DEFAULT_EXCHANGE:String = "NASDAQ"
-    private final let DEFAULT_TICKER:String = "AAPL"
+    fileprivate final let DATA_GATHERING_ERROR:String = "Error getting quote! Please make sure your exchange and ticker are valid. If they are, please try again later."
+    fileprivate final let TEXT_FORMAT_ERROR:String = "Please enter a valid ticker/exchange."
+    fileprivate final let DEFAULT_EXCHANGE:String = "NASDAQ"
+    fileprivate final let DEFAULT_TICKER:String = "AAPL"
     
     // View elements.
     @IBOutlet weak var entryView: UIView!
@@ -35,7 +35,7 @@ class QuoteViewController: UIViewController {
     @IBOutlet weak var quoteViewVerticalConstraint: NSLayoutConstraint!
     
     // Update constraints on rotation.
-    override func didRotateFromInterfaceOrientation(fromInterfaceOrientation: UIInterfaceOrientation) {
+    override func didRotate(from fromInterfaceOrientation: UIInterfaceOrientation) {
         updateConstraints()
     }
     
@@ -46,7 +46,7 @@ class QuoteViewController: UIViewController {
     
     // Update the constraints of the main two subviews based on
     // the current device orientation.
-    private func updateConstraints() {
+    fileprivate func updateConstraints() {
         let padding:CGFloat = 16.0
         let viewWidth = self.view.frame.size.width
         let viewHeight = self.view.frame.size.height
@@ -56,15 +56,15 @@ class QuoteViewController: UIViewController {
         let quoteViewWidth = quoteView.frame.width
         let quoteViewHeight = quoteView.frame.height
         
-        switch UIApplication.sharedApplication().statusBarOrientation {
-        case .Portrait, .PortraitUpsideDown, .Unknown:
+        switch UIApplication.shared.statusBarOrientation {
+        case .portrait, .portraitUpsideDown, .unknown:
             entryViewLeadingContstraint.constant = ((viewWidth - entryViewWidth) / 2) - padding
             entryViewVerticalContraint.constant = (((viewHeight / 2) - entryViewHeight) / 2) - padding
             
             quoteViewLeadingConstraint.constant = ((viewWidth - quoteViewWidth) / 2) - padding
             quoteViewVerticalConstraint.constant = ((((viewHeight / 2) - quoteViewHeight) / 2) + (viewHeight / 2)) - padding
             break
-        case .LandscapeLeft, .LandscapeRight:
+        case .landscapeLeft, .landscapeRight:
             entryViewVerticalContraint.constant = ((viewHeight - entryViewHeight) / 2) - padding
             entryViewLeadingContstraint.constant = (((viewWidth / 2) - entryViewWidth) / 2) - padding
             
@@ -78,11 +78,11 @@ class QuoteViewController: UIViewController {
         super.viewDidLoad()
         
         // Make status bar contrast with our dark background.
-        UIApplication.sharedApplication().statusBarStyle = .LightContent
+        UIApplication.shared.statusBarStyle = .lightContent
         
         // Make the getQuoteButton pretty.
         getQuoteButton.layer.cornerRadius = 5
-        getQuoteButton.layer.borderColor = getQuoteButton.currentTitleColor.CGColor
+        getQuoteButton.layer.borderColor = getQuoteButton.currentTitleColor.cgColor
         getQuoteButton.layer.borderWidth = 2
         
         // Gesture recognizer to close keyboard on tap-outside.
@@ -90,7 +90,7 @@ class QuoteViewController: UIViewController {
         view.addGestureRecognizer(tapGesture)
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         // Hide the quote upon initial load
         toggleQuoteViewVisibility(true)
         toggleLoadingAnimation(false)
@@ -102,7 +102,7 @@ class QuoteViewController: UIViewController {
     }
 
     // Called from UI. Initializes quote data fetching task.
-    @IBAction func getQuoteAction(sender: AnyObject) {
+    @IBAction func getQuoteAction(_ sender: AnyObject) {
         if let _exchange = exchangeTextField.text,
             let _ticker = tickerTextField.text {
             self.toggleLoadingAnimation(true)
@@ -117,7 +117,7 @@ class QuoteViewController: UIViewController {
     }
     
     // Calls the DataManager to gather quote data for display.
-    private func fetchQuoteData(_ticker:String, _exchange:String) {
+    fileprivate func fetchQuoteData(_ _ticker:String, _exchange:String) {
         DataManager.getQuote(_ticker, exchange: _exchange, onCompletion: { (quote, error) in
             if error == nil && quote != nil {
                 self.displayQuote(quote!)
@@ -132,50 +132,50 @@ class QuoteViewController: UIViewController {
     }
     
     // Displays a quote in the UI.
-    private func displayQuote(quote: Quote) {
+    fileprivate func displayQuote(_ quote: Quote) {
         askLabel.text = quote.ask
         bidLabel.text = quote.bid
         tickerExchangeLabel.text = String(format: "%@ (%@)", quote.ticker, quote.exchange)
     }
     
     // Displays an dismissable error message.
-    private func displayErrorMessage(error:String) {
+    fileprivate func displayErrorMessage(_ error:String) {
         let alertController = UIAlertController(title: "Error!", message:
-            error, preferredStyle: UIAlertControllerStyle.Alert)
-        alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default,handler: nil))
+            error, preferredStyle: UIAlertControllerStyle.alert)
+        alertController.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.default,handler: nil))
         
-        self.presentViewController(alertController, animated: true, completion: nil)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     // Clears the textfields for more input.
-    private func clearTextFieldText() {
+    fileprivate func clearTextFieldText() {
         tickerTextField.text = ""
         exchangeTextField.text = ""
     }
     
     // Shows/Hides loading animation during/after data fetching tasks.
-    private func toggleLoadingAnimation(showAnimation:Bool) {
+    fileprivate func toggleLoadingAnimation(_ showAnimation:Bool) {
         if showAnimation {
-            activityIndicator.hidden = false
+            activityIndicator.isHidden = false
             activityIndicator.startAnimating()
         } else {
-            activityIndicator.hidden = true
+            activityIndicator.isHidden = true
             activityIndicator.stopAnimating()
         }
     }
     
     // Shows/Hides quoteView during/after data fetching tasks.
-    private func toggleQuoteViewVisibility(hidden:Bool) {
-        quoteView.hidden = hidden
+    fileprivate func toggleQuoteViewVisibility(_ hidden:Bool) {
+        quoteView.isHidden = hidden
     }
     
     // Dimisses keyboard upon tapping the UI outside of the keyboard itself.
-    @objc private func tap(gesture: UITapGestureRecognizer) {
+    @objc fileprivate func tap(_ gesture: UITapGestureRecognizer) {
         closeKeyboard()
     }
     
     // Dimisses the keyboard.
-    private func closeKeyboard() {
+    fileprivate func closeKeyboard() {
         view.endEditing(true)
     }
     
