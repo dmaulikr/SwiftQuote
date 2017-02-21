@@ -15,7 +15,10 @@ class QuoteViewController: UIViewController {
     fileprivate final let DATA_GATHERING_ERROR:String = "Error getting quote! Please make sure your exchange and ticker are valid. If they are, please try again later."
     fileprivate final let TEXT_FORMAT_ERROR:String = "Please enter a valid ticker/exchange."
     fileprivate final let DEFAULT_EXCHANGE:String = "NASDAQ"
+    fileprivate final let DEFAULT_EXCHANGE_PLACEHOLDER:String = "(optional)"
     fileprivate final let DEFAULT_TICKER:String = "AAPL"
+    fileprivate final let POSITIVE_COLOR:UIColor = #colorLiteral(red: 0.3983910382, green: 1, blue: 0.8004186749, alpha: 1)
+    fileprivate final let NEGATIVE_COLOR:UIColor = #colorLiteral(red: 0.8549019608, green: 0.1098039216, blue: 0.3607843137, alpha: 1)
     
     // View elements.
     @IBOutlet weak var entryView: UIView!
@@ -24,8 +27,8 @@ class QuoteViewController: UIViewController {
     @IBOutlet weak var exchangeTextField: UITextField!
     @IBOutlet weak var quoteView: UIView!
     @IBOutlet weak var tickerExchangeLabel: UILabel!
-    @IBOutlet weak var askLabel: UILabel!
-    @IBOutlet weak var bidLabel: UILabel!
+    @IBOutlet weak var lastLabel: UILabel!
+    @IBOutlet weak var changeLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     // View constraints.
@@ -96,7 +99,7 @@ class QuoteViewController: UIViewController {
         toggleLoadingAnimation(false)
         
         // Load in default data and set correpsonding placeholder text.
-        exchangeTextField.placeholder = DEFAULT_EXCHANGE
+        exchangeTextField.placeholder = DEFAULT_EXCHANGE_PLACEHOLDER
         tickerTextField.placeholder = DEFAULT_TICKER
         fetchQuoteData(DEFAULT_TICKER, _exchange: DEFAULT_EXCHANGE)
     }
@@ -133,9 +136,23 @@ class QuoteViewController: UIViewController {
     
     // Displays a quote in the UI.
     fileprivate func displayQuote(_ quote: Quote) {
-        askLabel.text = quote.ask
-        bidLabel.text = quote.bid
+        updateLast(quote.last)
+        updateChange(quote.change)
         tickerExchangeLabel.text = String(format: "%@ (%@)", quote.ticker, quote.exchange)
+    }
+    
+    fileprivate func updateLast(_ last:String) {
+        lastLabel.text = last
+    }
+    
+    fileprivate func updateChange(_ change:String) {
+        changeLabel.text = change
+        
+        if change.contains("-") {
+            changeLabel.textColor = NEGATIVE_COLOR
+        } else {
+            changeLabel.textColor = POSITIVE_COLOR
+        }
     }
     
     // Displays an dismissable error message.

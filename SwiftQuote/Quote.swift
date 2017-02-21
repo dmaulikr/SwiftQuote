@@ -11,15 +11,15 @@ import Foundation
 open class Quote {
     
     var exchange: String
-    var ask: String
-    var bid: String
     var ticker: String
+    var last: String
+    var change: String
     
-    init(_ exchange: String?, _ ticker: String?, _ ask: String?, _ bid: String?) {
-        self.exchange = exchange != nil ? exchange! : "???"
-        self.ask = ask != nil ? ask! : "???"
-        self.bid = bid != nil ? bid! : "???"
-        self.ticker = ticker != nil ? ticker! : "???"
+    init(_ exchange: String?, _ ticker: String?, _ last: String?, _ change: String?) {
+        self.exchange = exchange ?? "???"
+        self.ticker = ticker ?? "???"
+        self.last = last ?? "0.00"
+        self.change = change ?? "+0.00"
     }
     
  }

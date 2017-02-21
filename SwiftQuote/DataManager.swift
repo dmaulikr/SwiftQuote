@@ -13,7 +13,8 @@ import SwiftyJSON
 
 class DataManager: NSObject {
     
-    internal static let GOOGLE_FINANCE_URL:String = "https://www.google.com/finance/info?q=%@:%@"
+    internal static let GOOGLE_FINANCE_URL_FULL:String = "https://www.google.com/finance/info?q=%@:%@"
+    internal static let GOOGLE_FINANCE_URL_TICKER:String = "https://www.google.com/finance/info?q=%@"
     
     // Used By:
     // QuoteViewController
@@ -21,7 +22,7 @@ class DataManager: NSObject {
         // Google finance will return an array of JSON based on the ticker that was presented.
         // Throw the correct error in the event that the exchange or ticker is invalid or if the 
         // request fails.
-        let quoteUrl = String(format: GOOGLE_FINANCE_URL, exchange, ticker)
+        let quoteUrl = formUrl(exchange: exchange, ticker: ticker)
         Alamofire.request(quoteUrl)
             .validate()
             .responseString(completionHandler: { (response) in
@@ -52,15 +53,25 @@ class DataManager: NSObject {
             })
     }
     
+    fileprivate static func formUrl(exchange:String, ticker:String) -> String {
+        let exchange = exchange.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        let ticker = ticker.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
+        
+        if ticker != "" {
+            return String(format: GOOGLE_FINANCE_URL_FULL, exchange, ticker)
+        } else {
+            return String(format: GOOGLE_FINANCE_URL_TICKER, ticker)
+        }
+    }
+    
     // Accepts a JSON input and returns an optional Quote.
     fileprivate static func jsonToQuote(_ json: JSON) -> Quote? {
-        guard let _e = json["e"].string,
-            let _t = json["t"].string,
-            let _l = json["l"].string else {
-           return nil
-        }
+        let exchange = json["e"].string
+        let ticker = json["t"].string
+        let last = json["l"].string
+        let change = json["c"].string
         
-        return Quote(_e, _t, _l, _l)
+        return Quote(exchange, ticker, last, change)
     }
     
 }
